@@ -112,7 +112,7 @@ int t5()
     std::vector<double> y3;
 
     double xVal = 0;
-    for(int i = 0; i < n; i++)
+    for(int i = 0; i < n + 1; i++)
     { 
         xVal = -5. + i * 10. / n;
         x.push_back(xVal); 
@@ -121,13 +121,13 @@ int t5()
     }
     auto pol = new LagrangePol(x, y);
     auto pol2 = new NewtonPol(x, y);
-    int pointsNum = 100;
+    int pointsNum = 1000;
     for(int i = 0; i < pointsNum; i++)
     {
         xVal = -5 + i * 10. / pointsNum;
         x2.push_back(xVal);
-        y2.push_back(pol->Eval(xVal));
-        y3.push_back(pol2->Eval(xVal));
+        y2.push_back(pol->Eval(xVal) - 1 / (1 + xVal * xVal));
+        y3.push_back(pol2->Eval(xVal) - 1 / (1 + xVal * xVal));
     }
     TGraph gr(x.size(), x.data(), y.data());
     TGraph grPol(x2.size(), x2.data(), y2.data());
@@ -137,8 +137,8 @@ int t5()
     grPol.SetLineColor(kGreen);
     grPol.SetMarkerSize(2);
     grPol.SetMarkerColor(kRed);
-    gr.DrawClone();
-    grPol.DrawClone("same");
+
+    grPol.DrawClone();
     grPol2.DrawClone("same");
     return 0;
 }

@@ -23,3 +23,6 @@ n: int = 5000
 print(IntTrapezoidal(g, a, b, n))
 print(IntSimpson(g, a, b, n))
 print(integrate.quad(g, a, b, epsabs = 1e-10, epsrel=1e-6, limit=5000)[0])
+
+r = [1, 2, 3]
+print(r[-2])
