@@ -66,5 +66,5 @@ n: int = 10000
 dx: float = 5e-5
 print(bes(x, m, False))
 print(jv(m,x))
-print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 10))] ) )
-print( max( [np.abs( derivative(lambda xx: bes(xx, 0, True), x, dx, 1) + bes(x, 1, True) ) for x in list(np.linspace(0, 2 * np.pi, 100))] ) )
+print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
+print( max( [np.abs( derivative(lambda xx: bes(xx, 0, True), x, dx, 1) + bes(x, 1, True) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
