@@ -1,4 +1,6 @@
 import numpy as np
+import numpy.typing as npt
+import matplotlib.pyplot as ppt
 
 def f(t: float, x: float)->float:
     return -x
@@ -24,7 +26,8 @@ def EulerMethod(func, t0: float, x0: float, t: float)->float:
         xs.append(xs[-1] + h * func(ts[i], xs[-1]))
     return xs[-1]
 
-def RK2(func, t0: float, x0: float, t: float, alpha: float = 3 / 4)->float:
+
+def RK2(func, t0: float, x0: npt.ArrayLike, t: float, alpha: float = 3 / 4)->npt.ArrayLike:
     """ The second order Runge-Kutta method
 
     Args:
@@ -37,8 +40,17 @@ def RK2(func, t0: float, x0: float, t: float, alpha: float = 3 / 4)->float:
     Returns:
         float: value in t -- x(t)
     """
+    stepsNumber: int = 1000
+    ts: list = np.linspace(t0, t, stepsNumber)
+    xs: list = [np.array(x0)]
+    h: float = (t - t0) / stepsNumber
+    for i in range(stepsNumber):
+        k1: npt.ArrayLike = func(ts[i], xs[-1])
+        k2: npt.ArrayLike = func(ts[i] + h / 2 / alpha, xs[-1] + h / 2 / alpha * k1)
+        xs.append(xs[-1] + h * ((1- alpha) * k1 + alpha * k2))
+    return xs[-1]
 
-def RK4(func, t0: float, x0: float, t: float)->float:
+def RK4(func, t0: float, x0: npt.ArrayLike, t: float)->npt.ArrayLike:
     """ The fourth order Runge-Kutta method
 
     Args:
@@ -52,7 +64,7 @@ def RK4(func, t0: float, x0: float, t: float)->float:
     """
     stepsNumber: int = 10000
     ts: list = np.linspace(t0, t, stepsNumber)
-    xs: list = [x0]
+    xs: list = [np.array(x0)]
     h: float = (t - t0) / stepsNumber
     for i in range(stepsNumber):
         k1: float = func(ts[i], xs[-1])
@@ -64,5 +76,5 @@ def RK4(func, t0: float, x0: float, t: float)->float:
 
 ts: list = np.linspace(0, 3, 100)
 # print(max([np.fabs(EulerMethod(f, 0, 1, t) - np.exp(-t)) for t in ts]))
-# print(max([np.fabs(RK2(f, 0, 1, t) - np.exp(-t)) for t in ts]))
-print(max([np.fabs(RK4(f, 0, 1, t) - np.exp(-t)) for t in ts]))
+print(max([np.fabs(RK2(f, 0, 1, t) - np.exp(-t)) for t in ts]))
+# print(max([np.fabs(RK4(f, 0, 1, t) - np.exp(-t)) for t in ts]))
