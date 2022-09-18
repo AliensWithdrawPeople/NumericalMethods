@@ -1,4 +1,3 @@
-from multiprocessing.dummy import Array
 import numpy as np
 import numpy.typing as npt
 import matplotlib.pyplot as plt
@@ -32,11 +31,10 @@ def RK2(func, t0: float, x0: npt.ArrayLike, t: float, alpha: float = 3 / 4)->npt
         k1: npt.ArrayLike = func(ts[i], xs[-1])
         k2: npt.ArrayLike = func(ts[i] + h / 2 / alpha, xs[-1] + h / 2 / alpha * k1)
         xs.append(xs[-1] + h * ((1- alpha) * k1 + alpha * k2))
-        # print(xs[-1])
     return xs
 
-for i in range(10):
-    ans: np.ndarray = RK2(f, 0, [10 + i / 10, 5 + i / 10], 1)
+for i in range(100):
+    ans: np.ndarray = RK2(f, 0, [10 + i / 100, 5 + i / 100], 1)
     x: np.ndarray = np.array([x[0] for x in ans])
     y: np.ndarray = np.array([y[1] for y in ans])
     plt.plot(x, y)
