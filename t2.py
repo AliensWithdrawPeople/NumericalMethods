@@ -38,7 +38,7 @@ x:float = (b + a) / 2
 x:float = x0
 l:float = derivative(f, x, 1e-10, 1, order=11)
 print((b + a) / 2)
-# l:float = 3.3
+l:float = 3.3
 count: int = 0
 while 1:
     count: int = count + 1

@@ -4,6 +4,7 @@ from scipy import misc
 from scipy.optimize import minimize
 from scipy.special import jv
 import numpy as np
+import matplotlib.pyplot as plt
 
 def IntTrapezoidal(func, a: float, b: float, n: int)->float:
     return (b-a) / n * (reduce(lambda acc, x: acc + func(a + x * (b-a) / n), range(1, n), 0) + (func(a) + func(b)) / 2)
@@ -45,26 +46,32 @@ def derivative(func, x: float, dx: float, n: int)->float:
     binomial: list = pascalsTriangle(n)
     return reduce(lambda acc, i: acc + (-1)**i * binomial[i] * func(x + (n / 2 - i) * dx), range(n + 1), 0) / (dx**n)
    
-def bes(x: float, m: int, mod: bool)->float:
+def bes(x: float, m: int, mod: bool, n: int)->float:
     """Bessel functions of the first kind J_m with integer m
 
     Args:
         x (float): point where the Bessel function is calculated
         m (int): number of Bessel function
         mod (bool): True - Trapezoidal rule, False - Simpson rule
+        n (int): number of points for integral
 
     Returns:
         float: value of J_m(x)
     """
     if mod:
-        return IntTrapezoidal(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, 1000) / np.pi
-    return IntSimpson(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, 1000) / np.pi
+        return IntTrapezoidal(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, n) / np.pi
+    return IntSimpson(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, n) / np.pi
 
 x: float = 1
 m: int = 1
-n: int = 10000
-dx: float = 5e-5
-print(bes(x, m, False))
+n: int = 2
+dx: float = 5e-1
+simps: bool = False
+print(bes(x, m, simps, n))
 print(jv(m,x))
-print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
-print( max( [np.abs( derivative(lambda xx: bes(xx, 0, True), x, dx, 1) + bes(x, 1, True) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
+a = [np.abs( derivative(lambda xx: bes(xx, 0, simps, n), x, dx, 1) + bes(x, 1, simps, n) ) for x in list(np.linspace(0, 2 * np.pi, 1000))]
+# print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
+print( max(a) )
+xs: list = list(np.linspace(0, 2 * np.pi, 1000))
+plt.plot(xs, a, c="blue")
+plt.show()
