@@ -65,12 +65,12 @@ def bes(x: float, m: int, mod: bool, n: int)->float:
 x: float = 1
 m: int = 1
 n: int = 2
-dx: float = 5e-1
-simps: bool = False
-print(bes(x, m, simps, n))
+dx: float = 5e-5
+isSimps: bool = False
+print(bes(x, m, isSimps, n))
 print(jv(m,x))
-a = [np.abs( derivative(lambda xx: bes(xx, 0, simps, n), x, dx, 1) + bes(x, 1, simps, n) ) for x in list(np.linspace(0, 2 * np.pi, 1000))]
-# print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
+a = [np.abs( derivative(lambda xx: bes(xx, 0, isSimps, n), x, dx, 1) + bes(x, 1, isSimps, n) ) for x in list(np.linspace(0, 2 * np.pi, 1000))]
+print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
 print( max(a) )
 xs: list = list(np.linspace(0, 2 * np.pi, 1000))
 plt.plot(xs, a, c="blue")
