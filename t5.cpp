@@ -3,6 +3,7 @@
 #include<vector>
 #include<tuple>
 #include<TGraph.h>
+#include<TMath.h>
 
 class LagrangePol
 {
@@ -103,42 +104,51 @@ double NewtonPol::Eval(double x)
 
 int t5()
 {
-    int n = 15;
+    int n = 16;
     std::vector<double> x;
     std::vector<double> y;
+    std::vector<double> xAn;
+    std::vector<double> yAn;
 
     std::vector<double> x2;
     std::vector<double> y2;
     std::vector<double> y3;
 
     double xVal = 0;
-    for(int i = 0; i < n + 1; i++)
+    for(int i = 0; i < n; i++)
     { 
-        xVal = -5. + i * 10. / n;
+        // xVal = -5. + i * 10. / n;
+        xVal = 5 * cos((2 * (i + 1) - 1) * TMath::Pi() / 2 / n);
         x.push_back(xVal); 
         y.push_back(1 / (1 + xVal * xVal) ); 
-        // y.push_back(cos(xVal)); 
     }
     auto pol = new LagrangePol(x, y);
     auto pol2 = new NewtonPol(x, y);
-    int pointsNum = 1000;
+    int pointsNum = 100;
     for(int i = 0; i < pointsNum; i++)
     {
-        xVal = -5 + i * 10. / pointsNum;
+        // xVal = -5 + i * 10. / pointsNum;
+        xVal = 5 * cos((2 * (i + 1) - 1) * TMath::Pi() / 2 / n);
+        yAn.push_back(1 / (1 + xVal * xVal));
+        std::cout << 1 / (1 + xVal * xVal) << std::endl;
         x2.push_back(xVal);
-        y2.push_back(pol->Eval(xVal) - 1 / (1 + xVal * xVal));
-        y3.push_back(pol2->Eval(xVal) - 1 / (1 + xVal * xVal));
+        y2.push_back(pol->Eval(xVal));
+        // y2.push_back(pol->Eval(xVal) - 1 / (1 + xVal * xVal));
+
+        y3.push_back(pol2->Eval(xVal));
+        // std::cout << pol2->Eval(xVal) << std::endl;
+        // y3.push_back(pol2->Eval(xVal) - 1 / (1 + xVal * xVal));
     }
-    TGraph gr(x.size(), x.data(), y.data());
+    TGraph gr(x2.size(), x2.data(), yAn.data());
     TGraph grPol(x2.size(), x2.data(), y2.data());
-    
     TGraph grPol2(x2.size(), x2.data(), y3.data());
     grPol2.SetLineColor(kBlue);
     grPol.SetLineColor(kGreen);
-    grPol.SetMarkerSize(2);
-    grPol.SetMarkerColor(kRed);
-
-    grPol.DrawClone();
+    // grPol.SetMarkerSize(1);
+    grPol2.SetMarkerColor(kRed);
+    std::cout << x2.size() << std::endl;
+    gr.DrawClone();
+    grPol.DrawClone("same");
     grPol2.DrawClone("same");
     return 0;
 }
