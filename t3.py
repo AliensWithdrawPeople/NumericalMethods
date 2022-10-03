@@ -24,6 +24,21 @@ def IntAvg(func, a: float, b: float, n: int)->float:
     return (b-a) / n * (reduce(lambda acc, x: acc + func((a + x * (b-a) / n + (x + 1) * (b-a) / n) / 2), range(0, n), 0))
 
 def IntRunge(func, method, a: float, b: float, n: int, rho: int, r: float, notErr: bool)->float:
+    """Runge method for improving numerical integration 
+
+    Args:
+        func (_type_): _description_
+        method (_type_): numerucal integration method
+        a (float): lower boundary
+        b (float): higher boundary
+        n (int): number of points
+        rho (int): accuracy order
+        r (float): some number
+        notErr (bool): are you evaluating error of method or not?
+
+    Returns:
+        float: integral
+    """
     return (method(func, a, b, n) * (r**rho if notErr else 1) - method(func, a, b, int(n / r)) / (r**rho - 1))
 
 a: float = 0

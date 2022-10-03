@@ -1,7 +1,5 @@
 from functools import reduce
-from scipy import integrate
 from scipy import misc
-from scipy.optimize import minimize
 from scipy.special import jv
 import numpy as np
 import matplotlib.pyplot as plt
@@ -11,6 +9,9 @@ def IntTrapezoidal(func, a: float, b: float, n: int)->float:
 
 def IntSimpson(func, a: float, b: float, n: int)->float:
     return (b-a) / n / 3 *(reduce(lambda acc, x: acc + (3 - (-1)**x) * func(a + x*(b-a) / n), range(1, n), func(a)) + func(b))
+
+def IntRunge(func, method, a: float, b: float, n: int, rho: int, r: float, notErr: bool)->float:
+    return (method(func, a, b, n) * (r**rho if notErr else 1) - method(func, a, b, int(n / r)) / (r**rho - 1))
 
 def pascalsTriangle(n: int) -> list:
     """ Calculate nth row of Pascal's triangle
@@ -62,16 +63,13 @@ def bes(x: float, m: int, mod: bool, n: int)->float:
         return IntTrapezoidal(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, n) / np.pi
     return IntSimpson(lambda t: np.cos(m * t - x * np.sin(t)), 0, np.pi, n) / np.pi
 
-x: float = 1
+# x: float = 1
 m: int = 1
-n: int = 2
-dx: float = 5e-5
+n: int = 100
+dx: float = 1e-5
 isSimps: bool = False
-print(bes(x, m, isSimps, n))
-print(jv(m,x))
-a = [np.abs( derivative(lambda xx: bes(xx, 0, isSimps, n), x, dx, 1) + bes(x, 1, isSimps, n) ) for x in list(np.linspace(0, 2 * np.pi, 1000))]
-print( max( [np.abs( misc.derivative(lambda xx: jv(0, xx), x, dx, 1) + jv(1,x) ) for x in list(np.linspace(0, 2 * np.pi, 1000))] ) )
+a = [derivative(lambda xx: bes(xx, 0, isSimps, n), x, dx, 1) + bes(x, 1, isSimps, n) for x in list(np.linspace(0, 3 * np.pi, 1500))]
 print( max(a) )
-xs: list = list(np.linspace(0, 2 * np.pi, 1000))
+xs: list = list(np.linspace(0, 3 * np.pi, 1500))
 plt.plot(xs, a, c="blue")
 plt.show()

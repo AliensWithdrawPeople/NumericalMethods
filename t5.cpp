@@ -128,7 +128,7 @@ int t5()
     for(int i = 0; i < pointsNum; i++)
     {
         // xVal = -5 + i * 10. / pointsNum;
-        xVal = 5 * cos((2 * (i + 1) - 1) * TMath::Pi() / 2 / n);
+        xVal = 5 * cos((2 * (i + 1) - 1) * TMath::Pi() / 2 / pointsNum);
         yAn.push_back(1 / (1 + xVal * xVal));
         std::cout << 1 / (1 + xVal * xVal) << std::endl;
         x2.push_back(xVal);
