@@ -127,10 +127,8 @@ int t5()
     int pointsNum = 100;
     for(int i = 0; i < pointsNum; i++)
     {
-        // xVal = -5 + i * 10. / pointsNum;
-        xVal = 5 * cos((2 * (i + 1) - 1) * TMath::Pi() / 2 / pointsNum);
+        xVal = -5 + i * 10. / pointsNum;
         yAn.push_back(1 / (1 + xVal * xVal));
-        std::cout << 1 / (1 + xVal * xVal) << std::endl;
         x2.push_back(xVal);
         y2.push_back(pol->Eval(xVal));
         // y2.push_back(pol->Eval(xVal) - 1 / (1 + xVal * xVal));
@@ -146,7 +144,6 @@ int t5()
     grPol.SetLineColor(kGreen);
     // grPol.SetMarkerSize(1);
     grPol2.SetMarkerColor(kRed);
-    std::cout << x2.size() << std::endl;
     gr.DrawClone();
     grPol.DrawClone("same");
     grPol2.DrawClone("same");

@@ -23,7 +23,7 @@ def RK2(func, t0: float, x0: npt.ArrayLike, t: float, alpha: float = 3 / 4)->npt
     Returns:
         float: value in t -- x(t)
     """
-    stepsNumber: int = 100
+    stepsNumber: int = 10
     ts: list = np.linspace(t0, t, stepsNumber)
     xs: list = [np.array(x0)]
     h: float = (t - t0) / stepsNumber
@@ -33,9 +33,16 @@ def RK2(func, t0: float, x0: npt.ArrayLike, t: float, alpha: float = 3 / 4)->npt
         xs.append(xs[-1] + h * ((1- alpha) * k1 + alpha * k2))
     return xs
 
-for i in range(100):
-    ans: np.ndarray = RK2(f, 0, [10 + i / 100, 5 + i / 100], 1)
-    x: np.ndarray = np.array([x[0] for x in ans])
-    y: np.ndarray = np.array([y[1] for y in ans])
-    plt.plot(x, y)
+# for i in range(100):
+#     ans: np.ndarray = RK2(f, 0, [10 + i / 100, 5 + i / 100], 1)
+#     x: np.ndarray = np.array([x[0] for x in ans])
+#     y: np.ndarray = np.array([y[1] for y in ans])
+#     plt.plot(x, y)
+
+ans: np.ndarray = RK2(f, 0, [5, 6], 1)
+x: np.ndarray = np.array([x[0] for x in ans])
+y: np.ndarray = np.array([y[1] for y in ans])
+print(x)
+print(y)
+plt.plot(x, y)
 plt.show()
