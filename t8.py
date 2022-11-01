@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 import numpy as np
 import numpy.typing as npt
 import matplotlib.pyplot as plt
@@ -38,12 +38,12 @@ def log_dec(func):
         return a
     return wrap
 
-@log_dec
+# @log_dec
 def implicit(y0: npt.ArrayLike, x0: float, constA: float, vecA: npt.ArrayLike):
     J = np.array([[998, 1998], [-999, -1999]])
     return newtonImlicit(func=f, y0=y0, x0=x0, stepSize=h, J=J, constA=constA, vecA=vecA)
 
-h = 0.0001
+h = 0.001
 x = [0]
 y = [np.array((1, 2))]
 for i in range(1, 4):
@@ -51,25 +51,44 @@ for i in range(1, 4):
     y.append(np.array(expl1(func=f, y0=y[-1], x0=x[-1], stepSize=h)) )
     # y.append(np.array(3 * np.array([2, -1]) * np.exp(-1 * i * h) - 5 * np.array([1, -1]) * np.exp(-1000 * i * h) ) )
 
-vars = [(y[0], x[0], h / 2, h / 2 * f(t=x[0], x=y[0])), 
-        (y[1], x[2], 5 * h / 12, h / 12 * (8 * f(x[1], y[1]) - f(x[0], y[0])) ),
-        (y[2], x[2], 9 * h / 25, h / 24 * (19 * f(x[2], y[2]) - 5 * f(x[1], y[1]) + f(x[0], y[0])) ) ]
+vars = [(y[-1], x[-1], h / 2, h / 2 * f(t=x[-1], x=y[-1])), 
+        (y[-1], x[-1], 5 * h / 12, h / 12 * (8 * f(x[-1], y[-1]) - f(x[-2], y[-2])) ),
+        (y[-1], x[-1], 9 * h / 25, h / 24 * (19 * f(x[-2], y[-2]) - 5 * f(x[-3], y[-3]) + f(x[-4], y[-4])) ) ]
+
+def Vars(y: List, x: List)->tuple:
+    return [(y[-1], x[-1], h / 2, h / 2 * f(t=x[-1], x=y[-1])), 
+            (y[-1], x[-1], 5 * h / 12, h / 12 * (8 * f(x[-1], y[-1]) - f(x[-2], y[-2])) ),
+            (y[-1], x[-1], 9 * h / 25, h / 24 * (19 * f(x[-2], y[-2]) - 5 * f(x[-3], y[-3]) + f(x[-4], y[-4])) ) ]
+
 
 def explicit(func, y: npt.ArrayLike, x: npt.ArrayLike, h: float, mod: int)->npt.ArrayLike:
     if(mod == 1):
-        return y[0] + h * func(x[0], y[0])
+        return y[-1] + h * func(x[-1], y[-1])
     if(mod == 2):
-        return y[2] + h / 12 * (23 * func(x[2], y[2]) - 16 * func(x[1], y[1]) + 5 * func(x[0] , y[0]))
+        return y[-1] + h / 12 * (23 * func(x[-1], y[-1]) - 16 * func(x[-2], y[-2]) + 5 * func(x[-3] , y[-3]))
     if(mod == 3):
-        return y[3] + h / 24 * (55 * f(x[3], y[3]) - 59 * f(x[2], y[2]) + 37 * f(x[1], y[1]) - 9 * f(x[0], y[0]))
+        return y[-1] + h / 24 * (55 * f(x[-1], y[-1]) - 59 * f(x[-2], y[-2]) + 37 * f(x[-3], y[-3]) - 9 * f(x[-4], y[-4]))
 
 stepNum = 2
 implicit(*vars[stepNum - 1])
 print(explicit(f, y, x, h, stepNum))
-print(y[stepNum])
-print("true result:", 3 * np.array([2, -1]) * np.exp(-1 * stepNum * h) - 5 * np.array([1, -1]) * np.exp(-1000 * stepNum * h))
+print("true result:", 3 * np.array([2, -1]) * np.exp(-1 * 4 * h) - 5 * np.array([1, -1]) * np.exp(-1000 * 4 * h))
 
-def wrapper():
-    ys = y
-    xs = np.linspace(0, 1, h)
-    
+delta = []
+u = []
+v = []
+uTr = []
+vTr = []
+for i in range(100):
+    y.append(implicit(*Vars(y=y, x=x)[0]))
+    x.append(x[-1] + h)
+    u.append(y[-1][0])
+    v.append(y[-1][1])
+    tmp = 3 * np.array([2, -1]) * np.exp(-1 * x[-1]) - 5 * np.array([1, -1]) * np.exp(-1000 * x[-1])
+    delta.append(np.abs(y[-1] - tmp))
+    uTr.append(tmp[0])
+    vTr.append(tmp[1])
+# plt.plot(delta, x[4:])
+# plt.plot(u, v)
+plt.plot(uTr, vTr)
+plt.show()
