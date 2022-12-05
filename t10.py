@@ -10,6 +10,10 @@ def tridiagMatrixAlg(hx: float, ht: float, N: int, d: npt.ArrayLike)->npt.ArrayL
     a[0] = 0
     c[N - 1] = 0
 
+    b[0] = 1
+    c[0] = 0
+    b[N - 1] = 1
+    a[N - 1] = 0
     for i in range(1, N):
         ksi = a[i] / b[i-1]
         a[i] = 0
